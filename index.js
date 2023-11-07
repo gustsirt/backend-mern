@@ -15,7 +15,7 @@ class ProductManager {
   getProducts = () => {return this.products}
 
   getProductsById = (id) => {
-    this.products[id] ? this.products[id] : console.error("Not found");
+    return this.products[id] ? this.products[id] : console.error("Not found");
   }
 
   addProduct ( { title, description, price, code, thumbnail, stock } ) {
