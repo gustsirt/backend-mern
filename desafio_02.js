@@ -35,8 +35,11 @@ class ProductManager {
   }
 
   getProductsById = async (id) => {
-    const leerProductos = await this.getProducts()
-    return leerProductos[id] ? leerProductos[id] : "Producto no encontrado";
+    let leerProductos = []
+    leerProductos = await this.getProducts()
+
+    const producto = leerProductos.find((prod) => prod.id === id)
+    return producto ? producto : "Producto no encontrado"
   }
 
   async addProduct ( { title, description, price, code, thumbnail, stock } ) {
