@@ -1,4 +1,4 @@
-const { ProductManager } = require('./index')
+const { ProductManager } = require('./desafio01')
 
 const prueba = new ProductManager()
 
