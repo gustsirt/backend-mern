@@ -9,7 +9,6 @@ app.use(express.urlencoded({ extended: true }));
 const products = new PManager("./Productos.json");
 
 app.get('/products', (req, res) => {
-  console.log(products);
   const fasync = async () => {
     let { limit } = req.query;
 
