@@ -6,49 +6,42 @@ const port = 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const products = new PManager("./Productos.json");
+const products = new PManager('./Productos.json');
 
-app.get('/products', (req, res) => {
-  const fasync = async () => {
-    let { limit } = req.query;
+app.get('/products', async (req, res) => {
+  let { limit } = req.query;
 
-    const prodADevolver = await products.getProducts();
+  const prodADevolver = await products.getProducts();
 
-    if (!limit || limit > prodADevolver.length) {
-      res.status(200).json({
-        status: 'ok',
-        data: prodADevolver
-      });
-    } else {
-      res.status(200).json({
-        status: 'ok',
-        data: prodADevolver.slice(0, limit)
-      });
-    }
-  };
-  fasync();
+  if (!limit || limit > prodADevolver.length) {
+    res.status(200).json({
+      status: 'ok',
+      data: prodADevolver,
+    });
+  } else {
+    res.status(200).json({
+      status: 'ok',
+      data: prodADevolver.slice(0, limit),
+    });
+  }
 });
 
-app.get('/products/:id', (req, res) => {
-  const id = req.params.id*1;
-  
+app.get('/products/:id', async (req, res) => {
+  const id = req.params.id * 1;
 
-  const fasync = async () => {
-    const prodADevolver = await products.getProductsById(id);
+  const prodADevolver = await products.getProductsById(id);
 
-    if (typeof(prodADevolver) === 'string') {
-      res.status(404).json({
-        status: 'fail',
-        data: prodADevolver
-      })
-    } else {
-      res.status(200).json({
-        status: 'ok',
-        data: prodADevolver
-      });
-    }
-  };
-  fasync();
+  if (typeof prodADevolver === 'string') {
+    res.status(404).json({
+      status: 'fail',
+      data: prodADevolver,
+    });
+  } else {
+    res.status(200).json({
+      status: 'ok',
+      data: prodADevolver,
+    });
+  }
 });
 
 app.listen(port, () => {
