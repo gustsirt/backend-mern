@@ -9,7 +9,7 @@ let frase = "frase inicial"
 
 
 app.get('/api/frase', (req, res) => {
-  res.json({frase});
+  return res.status(200).json({ status: "ok", dat: frase});
 });
 
 app.get('/api/palabras/:pos', (req, res) => {
@@ -24,11 +24,21 @@ app.get('/api/palabras/:pos', (req, res) => {
   }
 });
 
-app.post('/api/palabras', (req, res) => {
-  const palabra = req.body;
-  
-  res.json({frase});
+app.put('/api/palabras/:pos', (req, res) => {
+  const pos = req.params.pos
+  const {palabra} = req.body;
+  const palabras = frase.split(" ")
+  palabras[pos-1]=palabra
+  frase = palabras.join(" ")
+  return res.status(200).json({status:"ok", data: frase});
 });
 
+app.delete('/api/palabras/:pos', (req, res) => {
+  const pos = req.params.pos;
+  let palabras = frase.split(" ")
+  palabras.splice(pos-1,1)
+  frase = palabras.join(" ")
+  return res.status(200).json({status:"ok", data: frase});
+});
 
 app.listen(PORT, () => console.log(`Escuchando puerto ${PORT}`));
