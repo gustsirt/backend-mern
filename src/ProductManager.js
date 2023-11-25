@@ -5,17 +5,7 @@ class ProductManager {
     this.path = path || "cls.json"
     this.counterId = 0
     this.products = []
-    /*{
-        id 
-        title (nombre del producto)
-        description (descripción del producto)
-        price (precio)
-        code (código identificador)
-        thumbnail (ruta de imagen)
-        stock (número de piezas disponibles)
-      }*/
-    
-    // inicializa productos
+
     this.getProducts(true)
   }
 

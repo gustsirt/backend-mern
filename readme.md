@@ -8,3 +8,5 @@
 * Tutor: Mariano Lopez
 
 ---
+node --watch src/server.js
+npm run "script"
