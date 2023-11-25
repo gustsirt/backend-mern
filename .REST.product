@@ -1,0 +1,68 @@
+### get Products
+GET http://localhost:8080/api/products
+
+### get Products Limit
+GET http://localhost:8080/api/products?limit=2
+
+### get Products ID
+GET http://localhost:8080/api/products/6
+
+### post Product bad
+POST http://localhost:8080/api/products HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Bicicleta Volta Ruta Brest Horq. Carbono Sora 18v 700c",
+  "description": "Cuadro aluminio ruta volta brest azul horquilla carbono r700 volta",
+  "code": "1007704",
+  "price": 1198299,
+  "stock": 15,
+  "status": true
+}
+
+### post Product bad Code
+POST http://localhost:8080/api/products HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Bicicleta Volta Ruta Brest Horq. Carbono Sora 18v 700c",
+  "description": "Cuadro aluminio ruta volta brest azul horquilla carbono r700 volta",
+  "code": "1007704",
+  "price": 1198299,
+  "stock": 15,
+  "status": true,
+  "category": "Ruta"
+}
+
+### post Product
+POST http://localhost:8080/api/products HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Bicicleta Volta Ruta Brest Horq. Carbono Sora 18v 700c",
+  "description": "Cuadro aluminio ruta volta brest azul horquilla carbono r700 volta",
+  "code": "1006836",
+  "price": 1198299,
+  "stock": 15,
+  "status": true,
+  "category": "Ruta"
+}
+
+
+### put Product
+PUT http://localhost:8080/api/products/6 HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Bicicleta Volta Ruta Brest Horq. Carbono Sora 18v 700c",
+  "description": "Cuadro aluminio ruta volta brest azul horquilla carbono r700 volta",
+  "code": "1006836",
+  "price": 1198299,
+  "stock": 15,
+  "status": false,
+  "category": "Ruta"
+}
+
+
+### delete Product
+DELETE http://localhost:8080/api/products/6
