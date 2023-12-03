@@ -1,52 +1,55 @@
-const { Router } = require("express");
-const { CartManager } = require("../manager/CarManager");
+const { Router } = require('express');
+const { CartManager } = require('../manager/CarManager');
 
-const router = Router()
-const carrito = new CartManager('./src/mock/Carts.json')
+const router = Router();
+const carrito = new CartManager('./src/mock/Carts.json');
 
 // GET http://localhost:8080/api/carts/:cid
-router.get('/:cid' , async (req, res) => {
-  const id = req.params.cid * 1
-  const resp = await carrito.getCarts(id) 
+router.get('/:cid', async (req, res) => {
+  const id = req.params.cid * 1;
+  const resp = await carrito.getCarts(id);
 
-  if (typeof (resp) === "string") {
+  if (typeof resp === 'string') {
     res.status(400).json({
-      status: "fail",
-      data: resp
-  })} else {
+      status: 'fail',
+      data: resp,
+    });
+  } else {
     res.status(200).json({
-      status: "ok",
-      data: resp
-  })}
-})
+      status: 'ok',
+      data: resp,
+    });
+  }
+});
 
 // POST http://localhost:8080/api/carts/
-router.post('/' , async (req, res) => {
-
-  const id = await carrito.create()
+router.post('/', async (req, res) => {
+  const id = await carrito.create();
 
   res.status(200).json({
-    status: "ok",
-    data: id
-})
-})
+    status: 'ok',
+    data: id,
+  });
+});
 
 // POST http://localhost:8080/api/carts/:cid/product/:pid
-router.post('/:cid/product/:pid' , async (req, res) => {
+router.post('/:cid/product/:pid', async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
 
-  const resp = await carrito.addProduct(cid,pid)
+  const resp = await carrito.addProduct(cid, pid);
 
-  if (typeof (resp) === "string") {
+  if (typeof resp === 'string') {
     res.status(400).json({
-      status: "fail",
-      data: resp
-  })} else {
+      status: 'fail',
+      data: resp,
+    });
+  } else {
     res.status(200).json({
-      status: "ok",
-      data: resp
-  })}
-})
+      status: 'ok',
+      data: resp,
+    });
+  }
+});
 
 exports.cartsRouter = router;

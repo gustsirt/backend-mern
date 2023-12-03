@@ -1,0 +1,21 @@
+@import './variables';
+@import './headeryfooter';
+
+
+
+body {
+  background-color: gray;
+
+  .display-hor {
+    display: flex;
+    flex-direction: column;
+
+    .elements-hor{
+      display: flex;
+
+      .card{
+        background-color: lightgray;
+      }
+    }
+  }
+}

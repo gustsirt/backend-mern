@@ -1,0 +1,33 @@
+<header>
+  <div class="title">
+    <img src="./images/bike.png" alt="Logo Pagina" />
+  </div>
+  <nav>
+    <ul>
+      <li>
+        Inicio
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="display-hor">
+    <h3>PRODUCTOS</h3>
+    <div class="elements-hor">
+      {{#each product}}
+        <div class="card">
+          <p>{{this.title}}</p>
+          <p>{{this.price}}</p>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div id="copyright">
+  </div>
+</footer>
+
+<script src="./js/index.js"></script>
