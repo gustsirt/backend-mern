@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 
   const getProducts = await products.getProducts();
 
-  if (!limit || limit > prodADevolver.length) {
+  if (!limit || limit > getProducts.length) {
     res.status(200).json({
       status: 'ok',
       data: getProducts,

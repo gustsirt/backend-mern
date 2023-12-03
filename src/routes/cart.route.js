@@ -6,8 +6,8 @@ const carrito = new CartManager('./src/mock/Carts.json')
 
 // GET http://localhost:8080/api/carts/:cid
 router.get('/:cid' , async (req, res) => {
-  const id = req.params.cid
-  const resp = await carrito.getCarts(5) 
+  const id = req.params.cid * 1
+  const resp = await carrito.getCarts(id) 
 
   if (typeof (resp) === "string") {
     res.status(400).json({
