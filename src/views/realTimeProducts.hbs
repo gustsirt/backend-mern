@@ -1,16 +1,26 @@
 <main>
   <div class="swiper-container">
-    <h3>PRODUCTOS</h3>
+    <h3>PRODUCTOS EN TIEMPO REAL</h3>
     <div class="swiper-wrapper">
       {{#each product}}
         <div class="swiper-slide">
           <img src={{this.thumbnail}}>
           <p class="sw-title">{{this.title}}</p>
-          <p class="sw-price">$ {{this.price}}</p>
+          <p class="sw-price">Precio: $ {{this.price}}</p>
+          <p class="sw-code">Código: {{this.code}}</p>
         </div>
       {{/each}}
     </div>
     <div class="swiper-pagination"></div>
+  </div>
+
+  <div class="formCarga">
+    <form>
+      <input type="text">
+      <input type="text">
+      <input type="number">
+      <input type="submit">
+    </form>
   </div>
 </main>
 
