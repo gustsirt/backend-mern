@@ -1,7 +1,7 @@
-const { Router } = require("express");
-const { PManager } = require("../manager/ProductManager");
+const { Router } = require('express');
+const { PManager } = require('../manager/ProductManager');
 
-const router = Router()
+const router = Router();
 
 const products = new PManager('./src/mock/Productos.json');
 
@@ -44,56 +44,61 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST http://localhost:8080/api/products/ + body: whole product
-router.post('/', async (req,res) => {
+router.post('/', async (req, res) => {
   const newProduct = req.body;
 
   const resp = await products.addProduct(newProduct);
 
-  if (typeof (resp) === "string") {
+  if (typeof resp === 'string') {
     res.status(400).json({
-      status: "fail",
-      data: resp
-  })} else {
+      status: 'fail',
+      data: resp,
+    });
+  } else {
     res.status(200).json({
-      status: "ok",
-      data: resp
-  })}
+      status: 'ok',
+      data: resp,
+    });
+  }
 });
 
 // PUT http://localhost:8080/api/products/:id + body: whole product
-router.put('/:id', async (req,res) => {
+router.put('/:id', async (req, res) => {
   const id = req.params.id * 1;
   const changedProduct = req.body;
 
   const resp = await products.updateProduct(id, changedProduct);
 
-  if (typeof (resp) === "string") {
+  if (typeof resp === 'string') {
     res.status(400).json({
-      status: "fail",
-      data: resp
-  })} else {
+      status: 'fail',
+      data: resp,
+    });
+  } else {
     res.status(200).json({
-      status: "ok",
-      data: resp
-  })}
-
+      status: 'ok',
+      data: resp,
+    });
+  }
 });
 
 // DELETE http://localhost:8080/api/products/:id
-router.delete('/:id', async (req,res) => {
-  const id = req.params.id * 1
+router.delete('/:id', async (req, res) => {
+  const id = req.params.id * 1;
 
-  const resp = await products.deleteProduct(id)
+  const resp = await products.deleteProduct(id);
 
-  if (typeof (resp) === "string") {
+  if (typeof resp === 'string') {
     res.status(400).json({
-      status: "fail",
-      data: resp
-  })} else {  
+      status: 'fail',
+      data: resp,
+    });
+  } else {
     res.status(200).json({
-      status: "ok",
-      data: resp
-  })}
+      status: 'ok',
+      data: resp,
+    });
+  }
 });
 
 exports.productsRouter = router;

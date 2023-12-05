@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 const { productsRouter } = require('./routes/products.route.js');
 const { cartsRouter } = require('./routes/cart.route.js');
 const { viewsRouter } = require('./routes/views.route.js');
+const { PManager } = require('./manager/ProductManager.js');
 
 const app = express();
 const port = 8080;
@@ -34,3 +35,27 @@ app.use((err, req, res, next) => {
 const serverHttp = app.listen(port, () => {
   console.log(`Server andando en port ${port}`);
 });
+
+
+// Servidor WebSocket
+const serverIO = new Server(serverHttp);
+
+const products = new PManager('./src/mock/Productos.json');
+serverIO.on('connection', io => {
+  console.log("Nuevo cliente conectado");
+
+  io.on('nuevoProducto', async newProduct => {
+    await products.addProduct(newProduct);
+    const listProduct = await products.getProducts()
+    
+    io.emit('productos', listProduct)
+  })
+
+  io.on('eliminarProducto', async code => {
+    await products.deleteProductByCode(code);
+    const listProduct = await products.getProducts()
+    
+    io.emit('productos', listProduct)
+  })
+})
+
