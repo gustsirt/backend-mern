@@ -3,6 +3,7 @@ const { ProductMongo } = require('../daos/mongo/products.daomongo');
 
 const router = Router();
 
+//const products = new ProductManager('./src/daos/file/mock/Productos.json');
 const products = new ProductMongo();
 
 // GET http://localhost:8080/api/products + ?limit=X

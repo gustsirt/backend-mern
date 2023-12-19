@@ -1,5 +1,5 @@
 const { ObjectId } = require('bson');
-const { productModel } = require('./models/products.model');
+const { productModel } = require('./models/products.model.js');
 
 class ProductDaoMongo {
   constructor() {
