@@ -5,10 +5,12 @@ const { Server } = require('socket.io');
 const { productsRouter } = require('./routes/products.route.js');
 const { cartsRouter } = require('./routes/cart.route.js');
 const { viewsRouter } = require('./routes/views.route.js');
-const { PManager } = require('./manager/ProductManager.js');
+const { PManager } = require('./daos/file/ProductManager.js');
+const {connectDB} = require('./config/index.js')
 
 const app = express();
 const port = 8080;
+connectDB()
 
 // configuraciones de la App
 app.use(express.json());
@@ -40,7 +42,7 @@ const serverHttp = app.listen(port, () => {
 // Servidor WebSocket
 const serverIO = new Server(serverHttp);
 
-const products = new PManager('./src/mock/Productos.json');
+const products = new PManager('./src/daos/file/mock/Productos.json');
 serverIO.on('connection', io => {
   console.log("Nuevo cliente conectado");
 

@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { CartManager } = require('../manager/CarManager');
+const { CartManager } = require('../daos/file/CartManager');
 
 const router = Router();
-const carrito = new CartManager('./src/mock/Carts.json');
+const carrito = new CartManager('./src/daos/file/mock/Carts.json');
 
 // GET http://localhost:8080/api/carts/:cid
 router.get('/:cid', async (req, res) => {

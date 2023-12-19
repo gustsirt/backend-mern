@@ -1,15 +1,16 @@
 const { Router } = require('express');
-const { PManager } = require('../manager/ProductManager');
+const { PManager } = require('../daos/file/ProductManager');
+const { ProductMongo } = require('../daos/mongo/products.daomongo');
 const router = Router();
 
-const productsMock = new PManager('./src/mock/Productos.json');
+const productsMock = new PManager('./src/daos/file/mock/Productos.json');
+const productsMongo = new ProductMongo();
 
 router.get('/', async (req, res) => {
-  const product = await productsMock.getProducts();
+  let product = await productsMongo.getProducts();
   product.forEach(prd => {
     prd.price = new Intl.NumberFormat('es-ES', {style: 'decimal'}).format(prd.price)
   })
-  console.log(product);
   res.render('home', {
     title: 'Inicio',
     product,
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/realTimeProducts', async (req, res) => {
-  const product = await productsMock.getProducts();
+  let product = await productsMongo.getProducts();
   product.forEach(prd => {
     prd.price = new Intl.NumberFormat('es-ES', {style: 'decimal'}).format(prd.price)
   })

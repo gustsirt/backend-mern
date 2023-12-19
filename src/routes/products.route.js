@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const { PManager } = require('../manager/ProductManager');
+const { ProductMongo } = require('../daos/mongo/products.daomongo');
 
 const router = Router();
 
-const products = new PManager('./src/mock/Productos.json');
+const products = new ProductMongo();
 
 // GET http://localhost:8080/api/products + ?limit=X
 router.get('/', async (req, res) => {
@@ -14,62 +14,62 @@ router.get('/', async (req, res) => {
   if (!limit || limit > getProducts.length) {
     res.status(200).json({
       status: 'ok',
-      data: getProducts,
+      payload: getProducts,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      data: getProducts.slice(0, limit),
+      payload: getProducts.slice(0, limit),
     });
   }
 });
 
-// GET http://localhost:8080/api/products/:id
-router.get('/:id', async (req, res) => {
-  const id = req.params.id * 1;
+// GET http://localhost:8080/api/products/:pid
+router.get('/:pid', async (req, res) => {
+  const pid = req.params.pid;
 
-  const getProducts = await products.getProductsById(id);
+  const getProducts = await products.getProductsById(pid);
 
-  if (typeof getProducts === 'string') {
+  if (typeof (getProducts) === 'string') {
     res.status(404).json({
       status: 'fail',
-      data: getProducts,
+      payload: getProducts, 
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      data: getProducts,
+      payload: getProducts,
     });
   }
 });
 
-// POST http://localhost:8080/api/products/ + body: whole product
+// FIXME POST http://localhost:8080/api/products/ + body: whole product
 router.post('/', async (req, res) => {
   const newProduct = req.body;
 
   const resp = await products.addProduct(newProduct);
 
-  if (typeof resp === 'string') {
+  if (typeof(resp) === 'string') {
     res.status(400).json({
       status: 'fail',
-      data: resp,
+      payload: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      data: resp,
+      payload: resp,
     });
   }
 });
 
-// PUT http://localhost:8080/api/products/:id + body: whole product
-router.put('/:id', async (req, res) => {
-  const id = req.params.id * 1;
+// PUT http://localhost:8080/api/products/:pid + body: whole product
+router.put('/:pid', async (req, res) => {
+  const pid = req.params.pid;
   const changedProduct = req.body;
 
-  const resp = await products.updateProduct(id, changedProduct);
+  const resp = await products.updateProduct(pid, changedProduct);
 
-  if (typeof resp === 'string') {
+  if (typeof(resp) === 'string') {
     res.status(400).json({
       status: 'fail',
       data: resp,
@@ -82,13 +82,14 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE http://localhost:8080/api/products/:id
-router.delete('/:id', async (req, res) => {
-  const id = req.params.id * 1;
+// DELETE http://localhost:8080/api/products/:pid o pcode
+router.delete('/:pid', async (req, res) => {
+  const pid = req.params.pid;
 
-  const resp = await products.deleteProduct(id);
+  //const resp = await products.deleteProductById(pid);
+  const resp = await products.deleteProductByCode(pid);
 
-  if (typeof resp === 'string') {
+  if (typeof(resp) === 'string') {
     res.status(400).json({
       status: 'fail',
       data: resp,

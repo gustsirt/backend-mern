@@ -4,7 +4,7 @@ class CartManager {
   constructor (path) {
     this.counterId = 0;
     this.cart = [];
-    this.path = path || './src/mock/Carts.json';
+    this.path = path || './mock/Carts.json';
     this.initiator();
   }
 

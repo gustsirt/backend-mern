@@ -2,7 +2,7 @@ const fs = require('fs');
 
 class ProductManager {
   constructor(path) {
-    this.path = path || './src/mock/Productos.json';
+    this.path = path || './mock/Productos.json';
     this.counterId = 0;
     this.products = [];
 
