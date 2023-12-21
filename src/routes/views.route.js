@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const { PManager } = require('../daos/file/ProductManager');
+//const { PManager } = require('../daos/file/ProductManager');
 const { ProductMongo } = require('../daos/mongo/products.daomongo');
 const router = Router();
 
-const productsMock = new PManager('./src/daos/file/mock/Productos.json');
+//const productsMock = new PManager('./src/daos/file/mock/Productos.json');
 const productsMongo = new ProductMongo();
 
 router.get('/', async (req, res) => {
@@ -32,6 +32,12 @@ router.get('/realTimeProducts', async (req, res) => {
     scriptPlus:`https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js`,
     scriptView:'./js/home.js'
   });
+})
+
+router.get('/chat', async (req, res) => {
+  res.render('chat', {
+    cssPlus:'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+  })
 })
 
 exports.viewsRouter = router;

@@ -25,13 +25,13 @@ content-type: application/json
 }
 
 ### post Product bad Code
-POST http://localhost:8080/api/products HTTP/1.1
+POST http://localhost:8080/api/products
 content-type: application/json
 
 {
   "title": "Bicicleta Volta Ruta Brest Horq. Carbono Sora 18v 700c",
   "description": "Cuadro aluminio ruta volta brest azul horquilla carbono r700 volta",
-  "code": "1007704",
+  "code": "11....",
   "price": 1198299,
   "stock": 15,
   "status": true,
@@ -56,7 +56,7 @@ content-type: application/json
 
 
 ### put Product Incorrecto
-PUT http://localhost:8080/api/products/657fa188808b14df5fca86ab HTTP/1.1
+PUT http://localhost:8080/api/products/657fa188808b14df5fca86ab
 content-type: application/json
 
 {

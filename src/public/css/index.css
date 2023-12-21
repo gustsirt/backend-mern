@@ -11,6 +11,7 @@ h1, h2, h3 {
 
 p, label, input, a {
   font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-size: 1rem;
 }
 
 h3 {
@@ -96,6 +97,9 @@ body .swiper-container .swiper-wrapper .swiper-slide .sw-code {
   font-style: italic;
   color: #009bdd;
 }
+body .swiper-container .swiper-pagination {
+  position: relative;
+}
 body .formRTP {
   background-color: lightgray;
   padding: 0.5rem;
@@ -112,4 +116,61 @@ body .formRTP .formcol label, body .formRTP .formcol input {
 body .formRTP .formcol .frButton {
   height: 2rem;
   width: 8rem;
+}
+body .chat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body .chat .title {
+  text-align: center;
+  padding-bottom: 1.5rem;
+}
+body .chat .element {
+  width: 100%;
+  display: flex;
+}
+body .chat .element .supGroupInput {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body .chat .element .supGroupInput .groupInput {
+  margin: 1em;
+}
+body .chat .element .supGroupInput .groupInput .input {
+  width: 300px;
+}
+body .chat .element .supGroupInput .groupInput .bx-check {
+  color: green;
+}
+body .chat .element .supGroupInput .groupInput .visibleOff {
+  display: none;
+}
+body .chat .element #messageLogs {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  margin: 1em;
+  background-color: #586a72;
+}
+body .chat .element #messageLogs .log {
+  display: flex;
+  justify-content: space-between;
+}
+body .chat .element #messageLogs .log .user {
+  color: #009bdd;
+  font-weight: bold;
+}
+body .chat .element #messageLogs .log .text {
+  padding-left: 0.5rem;
+  width: 100%;
+  justify-self: start;
+}
+body .chat .element #messageLogs .log .date {
+  font-style: italic;
+  color: lightgrey;
+  font-size: 0.6rem;
 }/*# sourceMappingURL=index.css.map */

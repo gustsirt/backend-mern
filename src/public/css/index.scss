@@ -39,7 +39,9 @@ body {
           color: $color01;
         }
       }
-
+    }
+    .swiper-pagination{
+      position: relative;
     }
   }
 
@@ -58,6 +60,72 @@ body {
       .frButton {
         height: 2rem;
         width: 8rem;
+      }
+    }
+  }
+
+  .chat{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .title{
+      text-align: center;
+      padding-bottom: 1.5rem;
+    }
+
+    .element{
+      width: 100%;
+      display: flex;
+      .supGroupInput{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .groupInput{
+          margin: 1em;
+  
+          .input{
+            width: 300px;
+          }
+          .bx-check{
+            color: green;
+          }
+          .visibleOff{
+            display: none;
+          }
+        }
+      }
+
+
+      #messageLogs {
+        width: 100%;
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        margin: 1em;
+        background-color: $color02;
+
+        .log{
+          display: flex;
+          justify-content: space-between;
+
+          .user{
+            color: $color01;
+            font-weight: bold;
+          }
+          .text{
+            padding-left: 0.5rem;
+            width: 100%;
+            justify-self: start;
+          }
+          .date{
+            font-style: italic;
+            color: lightgrey;
+            font-size: 0.6rem;
+          }
+        }
       }
     }
   }

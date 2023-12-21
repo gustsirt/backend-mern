@@ -1,7 +1,5 @@
 d = document;
 //Front Real Time Product
-console.log('Front');
-
 const socket = io();
 
 const divSwiper = d.querySelector('#swiper');
