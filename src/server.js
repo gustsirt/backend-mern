@@ -2,8 +2,7 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const { Server } = require('socket.io');
 
-const { productsRouter } = require('./routes/products.route.js');
-const { cartsRouter } = require('./routes/cart.route.js');
+const appRouter     = require('./routes')
 const { viewsRouter } = require('./routes/views.route.js');
 //const { PManager } = require('./daos/file/ProductManager.js');
 const { ProductMongo } = require('./daos/mongo/products.daomongo.js');
@@ -26,14 +25,7 @@ app.set('views', __dirname + '/views');
 
 // definiendo vistas
 app.use('/', viewsRouter);
-
-// definiendo la API
-app.use('/api/products/', productsRouter);
-app.use('/api/carts/', cartsRouter);
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Error de server');
-});
+app.use(appRouter)
 
 // Confirmacion de inicio
 const serverHttp = app.listen(port, () => {
@@ -47,6 +39,7 @@ const serverIO = new Server(serverHttp);
 const products = new ProductMongo();
 const messages = new MessageMongo();
 
+// TODO ver como modalaruzizar esto
 serverIO.on('connection', io => {
   console.log("Nuevo cliente conectado");
 

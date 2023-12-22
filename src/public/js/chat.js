@@ -19,7 +19,7 @@ chatBox.addEventListener('keyup', (e) => {
 }
 })
 
-// FIXME corregir el evento
+// FIXME corregir el evento de cargado inicial
 chatBox.addEventListener('load', () => {
   socket.emit('init', "dato")
 })
@@ -77,8 +77,9 @@ function changeValidate (check) {
   }
 }
 
-// FIXME:
+// FIXME: coregir evento que deberia borrar mongo mensajes
 clearMessages.addEventListener('click', () => {
   fetch('http://localhost:8080/api/messages', {method: "DELETE"});
   messageLogs.innerHTML = '';
+  socket.emit('init', "dato")
 })

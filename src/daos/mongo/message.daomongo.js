@@ -2,7 +2,7 @@ const { messageModel} = require('./models/messages.model.js');
 
 class MessageDaoMongo {
   constructor (){
-    this.model = messageModel;
+    this.model = messageModel
   }
 
   async addMessage (newMessage){
@@ -20,9 +20,9 @@ class MessageDaoMongo {
 
   async clearMessages () {
     try {
-      return await this.model.drop()
+      return await this.model.deleteMany({})
     } catch (error) {
-      console.log(error);
+      this.model = messageModel;
     }
   }
 }

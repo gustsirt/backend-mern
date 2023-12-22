@@ -44,7 +44,7 @@ router.get('/:pid', async (req, res) => {
   }
 });
 
-// FIXME POST http://localhost:8080/api/products/ + body: whole product
+// POST http://localhost:8080/api/products/ + body: whole product
 router.post('/', async (req, res) => {
   const newProduct = req.body;
 
