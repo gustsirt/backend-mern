@@ -18,11 +18,11 @@ class MessageDaoMongo {
     }
   }
 
-  async clearMessages () {
+  async clearMessages() {
     try {
       return await this.model.deleteMany({})
     } catch (error) {
-      this.model = messageModel;
+      console.log(error);
     }
   }
 }

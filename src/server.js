@@ -39,7 +39,7 @@ const serverIO = new Server(serverHttp);
 const products = new ProductMongo();
 const messages = new MessageMongo();
 
-// TODO ver como modalaruzizar esto
+// TODO ver como modalaruzizar esto (ver midelware)
 serverIO.on('connection', io => {
   console.log("Nuevo cliente conectado");
 
@@ -66,6 +66,11 @@ serverIO.on('connection', io => {
   })
 
   io.on('init', async () => {
+    io.emit('messageLogs', newMessaegs)
+  })
+
+  io.on('clean', async () => {
+    await messages.clearMessages()
     io.emit('messageLogs', newMessaegs)
   })
 })

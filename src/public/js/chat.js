@@ -79,7 +79,6 @@ function changeValidate (check) {
 
 // FIXME: coregir evento que deberia borrar mongo mensajes
 clearMessages.addEventListener('click', () => {
-  fetch('http://localhost:8080/api/messages', {method: "DELETE"});
   messageLogs.innerHTML = '';
-  socket.emit('init', "dato")
+  socket.emit('clean', "dato")
 })
