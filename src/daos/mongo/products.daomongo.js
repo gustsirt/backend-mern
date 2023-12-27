@@ -1,4 +1,4 @@
-const { ObjectId } = require('bson');
+//const { ObjectId } = require('bson');
 const { productModel } = require('./models/products.model.js');
 
 class ProductDaoMongo {
@@ -8,7 +8,7 @@ class ProductDaoMongo {
 
   getProducts = async () => {
     try {
-      return await this.model.find().lean();
+      return await this.model.find().lean()
     } catch (error) {
       console.log(error);
     }
@@ -16,14 +16,12 @@ class ProductDaoMongo {
 
   getProductsById = async (pid) => {
     try {
-      //return await this.model.find({ _id: new ObjectId(pid) });
-      return await this.model.find({ _id: pid });
+      return await this.model.find({ _id: pid});
     } catch (error) {
       console.log(error);
     }
   };
   
-  // FIXME: falta la validacion cuando el codigo esta repetido
   addProduct = async ({ title, description, code, price, stock, status = true, category, thumbnail }) => {
     try {
       if ( !title || !description || !code || !price || !stock || !status || !category || !thumbnail) {
@@ -38,12 +36,6 @@ class ProductDaoMongo {
         return 'ERROR: debe completar todos los campos';
       }
 
-      // const exists = this.model.findOne({code});
-      // console.log(exists);
-      // if (exists) {
-      //   return 'ERROR: codigo repetido';
-      // }
-
       const newProduct = {
         title: title,
         description: description,
@@ -56,35 +48,50 @@ class ProductDaoMongo {
       };
 
       return await this.model.create(newProduct)
+
     } catch (error) {
-      console.log(error);
+      if (error.code === 11000) { return 'ERROR: codigo repetido' }
+      return 'Verificar ERROR de mongoose codigo: '+error.code
     }
   };
 
-  // FIXME: falta la validacion cuando el codigo no existe
   updateProduct = async (pid, changedProduct) => {
+    const updateProd = await this.getProductsById(pid)
+
+    if(updateProd.length === 0 ) { return 'Producto no encontrado'  }
+
     try {
-      return await this.model.updateOne({_id: new ObjectId(pid)}, changedProduct)
+      await this.model.updateOne({_id: pid}, changedProduct)
+      return await this.getProductsById(pid)
     } catch (error) {
+      if (error.code === 11000) { return 'ERROR: esta queriendo ingresar un codigo repetido' }
       console.log(error);
+      return error
     };
   };
 
-  // FIXME: falta la validacion cuando el codigo no existe
   deleteProductById = async (pid) => {
+    const deleteProd = await this.getProductsById(pid)
+    
+    if(deleteProd.length === 0 ) { return 'Producto no encontrado'  }
     try {
-      return await this.model.deleteOne({ _id: new ObjectId(pid) });
+      await this.model.deleteOne({ _id: pid })
+      return deleteProd
     } catch (error) {
       console.log(error);
+      return "Hubo un error en la peticion"
     }
   }
 
-  // FIXME: falta la validacion cuando el codigo no existe
   deleteProductByCode = async (pcode) => {
+    const productoEliminado = await this.model.find({ code: pcode });
+
+    if(productoEliminado.length === 0 ) { return 'Producto no encontrado'  }
     try {
-      return await this.model.deleteOne({ code: pcode });
+      await this.model.deleteOne({ code: pcode });
+      return productoEliminado
     } catch (error) {
-      console.log(error);
+      return "Hubo un error en el la peticion"
     }
   }
 }

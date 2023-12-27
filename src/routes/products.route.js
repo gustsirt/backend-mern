@@ -73,32 +73,50 @@ router.put('/:pid', async (req, res) => {
   if (typeof(resp) === 'string') {
     res.status(400).json({
       status: 'fail',
-      data: resp,
+      payload: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      data: resp,
+      payload: resp,
     });
   }
 });
 
-// DELETE http://localhost:8080/api/products/:pid o pcode
+// DELETE http://localhost:8080/api/products/:pid
 router.delete('/:pid', async (req, res) => {
   const pid = req.params.pid;
 
-  //const resp = await products.deleteProductById(pid);
-  const resp = await products.deleteProductByCode(pid);
+  const resp = await products.deleteProductById(pid);
 
   if (typeof(resp) === 'string') {
     res.status(400).json({
       status: 'fail',
-      data: resp,
+      payload: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      data: resp,
+      payload: resp,
+    });
+  }
+});
+
+// DELETE http://localhost:8080/api/products?code=x
+router.delete('/', async (req, res) => {
+  const pcode = req.query.code;
+
+  const resp = await products.deleteProductByCode(pcode);
+
+  if (typeof(resp) === 'string') {
+    res.status(400).json({
+      status: 'fail',
+      payload: resp,
+    });
+  } else {
+    res.status(200).json({
+      status: 'ok',
+      payload: resp,
     });
   }
 });
