@@ -1,16 +1,17 @@
 const express = require('express');
-const handlebars = require('express-handlebars');
-const { Server } = require('socket.io');
-
-const appRouter     = require('./routes')
-const { viewsRouter } = require('./routes/views.route.js');
-//const { PManager } = require('./daos/file/ProductManager.js');
-const { ProductMongo } = require('./daos/mongo/products.daomongo.js');
+const { createServer} = require('node:http')
+const serverIo = require('./routes/serverIO.js')
 const {connectDB} = require('./config/index.js');
-const { MessageMongo } = require('./daos/mongo/message.daomongo.js');
 
-const app = express();
+const handlebars = require('express-handlebars');
+const { viewsRouter } = require('./routes/views.route.js');
+const appRouter     = require('./routes')
+
 const port = 8080;
+const app = express();
+const server = createServer(app)
+serverIo(server)
+
 connectDB()
 
 // configuraciones de la App
@@ -28,50 +29,6 @@ app.use('/', viewsRouter);
 app.use(appRouter)
 
 // Confirmacion de inicio
-const serverHttp = app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server andando en port ${port}`);
 });
-
-// Servidor WebSocket
-const serverIO = new Server(serverHttp);
-
-//const products = new PManager('./src/daos/file/mock/Productos.json');
-const products = new ProductMongo();
-const messages = new MessageMongo();
-
-// TODO ver como modalaruzizar esto (ver midelware)
-serverIO.on('connection', io => {
-  console.log("Nuevo cliente conectado");
-
-  //REAL TIME PRODUCT
-  io.on('nuevoProducto', async newProduct => {
-    console.log('llega aca 01');
-    await products.addProduct(newProduct);
-    const listProduct = await products.getProducts()
-    
-    io.emit('productos', listProduct)
-  })
-
-  io.on('eliminarProducto', async code => {
-    await products.deleteProductByCode(code);
-    const listProduct = await products.getProducts()
-    
-    io.emit('productos', listProduct)
-  })
-
-  //CHAT
-  io.on('message', async (data) => {
-    const newMessaegs = await messages.addMessage(data);
-    io.emit('messageLogs', newMessaegs)
-  })
-
-  io.on('init', async () => {
-    io.emit('messageLogs', newMessaegs)
-  })
-
-  io.on('clean', async () => {
-    await messages.clearMessages()
-    io.emit('messageLogs', newMessaegs)
-  })
-})
-
