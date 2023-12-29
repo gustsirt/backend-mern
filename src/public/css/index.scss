@@ -13,7 +13,36 @@ body {
     flex-direction: column;
     align-items: center;
 
+    .swiper-filter{
+      display: flex;
+
+      h4 {
+        font-weight: bolder;
+        margin: 0.5rem;
+      }
+
+      .groupFilter{
+        display: flex;
+        margin: 0.5rem;
+
+        .titleFilter{
+          font-weight: bold;
+          color: #013449;
+        }
+        div{
+          display: flex;
+
+          a{
+            margin: 0 0.25rem;
+          }
+        }
+      }
+    }
+
     .swiper-wrapper{
+      display: flex;
+      width: 100%;
+      flex-wrap: nowrap;
       .swiper-slide{
         width: 20%;
         margin: 0.3rem;
@@ -41,7 +70,12 @@ body {
       }
     }
     .swiper-pagination{
-      position: relative;
+      display: flex;
+      margin: 0.5rem auto;
+
+      a, p {
+        margin: 5px;
+      }
     }
   }
 

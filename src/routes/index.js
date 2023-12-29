@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const { viewsRouter } = require('./views.route.js');
-const { productsRouter } = require('./products.route.js');
-const { cartsRouter } = require('./cart.route.js');
+const { productsRouter } = require('./apis/products.route.js');
+const { cartsRouter } = require('./apis/cart.route.js');
 const { MessageMongo } = require('../daos/mongo/message.daomongo.js');
 
 const router = Router()

@@ -6,11 +6,22 @@ class ProductDaoMongo {
     this.model = productModel;
   }
 
-  getProducts = async () => {
+  getProducts = async (filters) => {
+    //console.log(filters);
+    const query = filters.query
+
+    if ( !(filters.sort===1) && !(filters.sort===-1) && !(filters.sort==='asc') & !(filters.sort==='desc') ) { filters.sort = null }
+
+    const filter = { limit: filters.limit*1, page: filters.page }
+    if (filters.sort) {filter["sort"] = filters.sort}
+
+    //console.log(query, filter);
+
     try {
-      return await this.model.find().lean()
+      return await this.model.paginate(query, filter)
     } catch (error) {
       console.log(error);
+      return 'Hubo un error en la petición'
     }
   };
 
@@ -92,6 +103,20 @@ class ProductDaoMongo {
       return productoEliminado
     } catch (error) {
       return "Hubo un error en el la peticion"
+    }
+  }
+
+  getCategorys = async () => {
+    try {
+      const list = await this.model.aggregate([
+        {$group: {"_id": "$category"}}
+      ])
+      const arrayCategory = list.map( (x) => {
+        return x._id
+      })
+      return arrayCategory
+    } catch (error) {
+      return "Ocurrio un Error"
     }
   }
 }

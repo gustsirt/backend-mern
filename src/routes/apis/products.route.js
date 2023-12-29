@@ -1,28 +1,51 @@
 const { Router } = require('express');
-const { ProductMongo } = require('../daos/mongo/products.daomongo');
+const { ProductMongo } = require('../../daos/mongo/products.daomongo');
+const { productModel } = require('../../daos/mongo/models/products.model');
 
 const router = Router();
 
 //const products = new ProductManager('./src/daos/file/mock/Productos.json');
 const products = new ProductMongo();
 
-// GET http://localhost:8080/api/products + ?limit=X
+// GET http://localhost:8080/api/products + ? limit, page, sort, query
 router.get('/', async (req, res) => {
-  let { limit } = req.query;
+  let { limit = 10, page = 1, sort, campo1, filtro1, campo2, filtro2, campo3, filtro3 } = req.query;
+  const filters = {
+    limit,
+    page,
+    sort,
+    query: {}
+  }
+  if(campo1 && filtro1) {filters.query[campo1]= filtro1}
+  if(campo2 && filtro2) {filters.query[campo2]= filtro2}
+  if(campo3 && filtro3) {filters.query[campo3]= filtro3}
 
-  const getProducts = await products.getProducts();
+  const resp = await products.getProducts(filters);
+  //console.log((resp));
 
-  if (!limit || limit > getProducts.length) {
-    res.status(200).json({
-      status: 'ok',
-      payload: getProducts,
-    });
-  } else {
-    res.status(200).json({
-      status: 'ok',
-      payload: getProducts.slice(0, limit),
+  let prevLink = resp.prevPage ? `page=${resp.prevPage}` : ''
+  let nextLink = resp.nextPage ? `page=${resp.nextPage}` : ''
+  //if (resp.hasPrevPage)
+
+  if(typeof(resp) === 'string') {
+    res.status(400).json({
+      status: 'error',
+      payload: resp,
     });
   }
+
+  res.status(200).json({
+    status: 'success',
+    payload: resp.docs,
+    totalPages: resp.totalPages,
+    prevPage: resp.prevPage,
+    nextPage: resp.nextPage,
+    page: resp.page,
+    hasPrevPage: resp.hasPrevPage,
+    hasNextPage: resp.hasNextPage,
+    prevLink: prevLink,
+    nextLink: nextLink
+  });
 });
 
 // GET http://localhost:8080/api/products/:pid
@@ -121,4 +144,20 @@ router.delete('/', async (req, res) => {
   }
 });
 
+// GET http://localhost:8080/api/products/categorys
+router.get('/group/categorys', async (req, res) => {
+  const resp = await products.getCategorys();
+
+  if (typeof(resp) === 'string') {
+    res.status(400).json({
+      status: 'fail',
+      payload: resp,
+    });
+  } else {
+    res.status(200).json({
+      status: 'ok',
+      payload: resp,
+    });
+  }
+});
 exports.productsRouter = router;

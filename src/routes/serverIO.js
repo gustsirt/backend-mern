@@ -16,14 +16,20 @@ module.exports = function (server) {
     //REAL TIME PRODUCT
     ios.on('nuevoProducto', async newProduct => {
       await products.addProduct(newProduct);
-      const listProduct = await products.getProducts()
+
+      let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
+      resp = await resp.json()
+      const listProduct = resp.payload;
       
       io.emit('productos', listProduct)
     })
   
     ios.on('eliminarProducto', async code => {
       await products.deleteProductByCode(code);
-      const listProduct = await products.getProducts()
+      
+      let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
+      resp = await resp.json()
+      const listProduct = resp.payload;
       
       io.emit('productos', listProduct)
     })

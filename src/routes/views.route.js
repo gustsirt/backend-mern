@@ -6,22 +6,35 @@ const router = Router();
 //const productsMock = new PManager('./src/daos/file/mock/Productos.json');
 const productsMongo = new ProductMongo();
 
+// ruta: /
 router.get('/', async (req, res) => {
-  let product = await productsMongo.getProducts();
+  const { page = 1 } = req.query
+  let resp = await fetch(`http://localhost:8080/api/products?page=${page}&limit=5`);
+  resp = await resp.json()
+  const product = resp.payload;
+  //console.log(resp)
+
   product.forEach(prd => {
     prd.price = new Intl.NumberFormat('es-ES', {style: 'decimal'}).format(prd.price)
   })
   res.render('home', {
     title: 'Inicio',
     product,
-    cssPlus:`https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css`,
-    scriptPlus:`https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js`,
-    scriptView:'./js/home.js'
+    page: resp.page,
+    totalPages: resp.totalPages,
+    hasPrevPage: resp.hasPrevPage,
+    hasNextPage: resp.hasNextPage,
+    prevLink: `/?${resp.prevLink}`,
+    nextLink: `/?${resp.nextLink}`,
+    category: await productsMongo.getCategorys()
   });
 });
 
 router.get('/realTimeProducts', async (req, res) => {
-  let product = await productsMongo.getProducts();
+  let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
+  resp = await resp.json()
+  const product = resp.payload;
+  
   product.forEach(prd => {
     prd.price = new Intl.NumberFormat('es-ES', {style: 'decimal'}).format(prd.price)
   })
@@ -36,7 +49,6 @@ router.get('/realTimeProducts', async (req, res) => {
 
 router.get('/chat', async (req, res) => {
   res.render('chat', {
-    cssPlus:'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
   })
 })
 

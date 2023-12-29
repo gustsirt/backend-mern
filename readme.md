@@ -12,5 +12,5 @@
 
 ---
 
-EL ARCHIVO: colleccionPruebaPOSTMAN v2.json
-es el codigo exportado para POSTMAN version 2.0
+<p style="color: hotpink">EL ARCHIVO: "colleccionPruebaPOSTMAN v2.json" es el codigo exportado para POSTMAN version 2.0</p>
+

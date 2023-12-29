@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { CartMongo } = require('../daos/mongo/cart.daomongo');
+const { CartMongo } = require('../../daos/mongo/cart.daomongo');
 
 const router = Router();
 //const carrito = new CartManager('./src/daos/file/mock/Carts.json');

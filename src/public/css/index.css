@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   font-family: "Rubik", Arial, Helvetica, sans-serif;
 }
 
@@ -73,6 +73,32 @@ body .swiper-container {
   flex-direction: column;
   align-items: center;
 }
+body .swiper-container .swiper-filter {
+  display: flex;
+}
+body .swiper-container .swiper-filter h4 {
+  font-weight: bolder;
+  margin: 0.5rem;
+}
+body .swiper-container .swiper-filter .groupFilter {
+  display: flex;
+  margin: 0.5rem;
+}
+body .swiper-container .swiper-filter .groupFilter .titleFilter {
+  font-weight: bold;
+  color: #013449;
+}
+body .swiper-container .swiper-filter .groupFilter div {
+  display: flex;
+}
+body .swiper-container .swiper-filter .groupFilter div a {
+  margin: 0 0.25rem;
+}
+body .swiper-container .swiper-wrapper {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+}
 body .swiper-container .swiper-wrapper .swiper-slide {
   width: 20%;
   margin: 0.3rem;
@@ -98,7 +124,11 @@ body .swiper-container .swiper-wrapper .swiper-slide .sw-code {
   color: #009bdd;
 }
 body .swiper-container .swiper-pagination {
-  position: relative;
+  display: flex;
+  margin: 0.5rem auto;
+}
+body .swiper-container .swiper-pagination a, body .swiper-container .swiper-pagination p {
+  margin: 5px;
 }
 body .formRTP {
   background-color: lightgray;

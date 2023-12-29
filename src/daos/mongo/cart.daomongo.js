@@ -17,7 +17,7 @@ class CartDaoMongo {
   // FIXME: falta la validacion cuando el codigo no existe
   async getCarts( cid ) {
     try {
-      return await this.model.findOne({_id: new ObjectId(cid)})
+      return await this.model.findOne({_id: cid})
     } catch (error) {
       console.log(error);
     }
@@ -26,21 +26,13 @@ class CartDaoMongo {
   // FIXME: falta la validacion cuando el codigo no existe
   async addProduct(cid, productId) {
     try {
-      const Cart = await this.getCarts(cid)
-      const newCart = {...Cart._doc}
-      const i = newCart.cart.findIndex((elm) => elm.productId === productId)
+      let cart = await this.model.findOne({_id: cid})
+      cart.products.push({product: productId})
+      await this.model.updateOne({_id: cid}, cart)
+      return await this.model.findOne({_id: cid})
 
-      if (i === -1) {
-        newCart.cart.push({
-          productId: productId,
-          quantity: 1
-        })
-      } else {
-        newCart.cart[i].quantity++
-      }
-      return await this.model.updateOne({_id: new ObjectId(cid)}, newCart)
     } catch (error) {
-      console.log(error);
+      return "Ocurrio un error al agregar el producto"
     }
   }
 
