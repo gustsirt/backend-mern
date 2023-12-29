@@ -33,8 +33,8 @@ router.post('/', async (req, res) => {
   });
 });
 
-// POST http://localhost:8080/api/carts/
-router.post('/:cid', async (req, res) => {
+// PUT http://localhost:8080/api/carts/:cid
+router.put('/:cid', async (req, res) => {
   const cid = req.params.cid;
   const array = req.body
 

@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "312200cf-2a54-4168-8dd0-5f948c6873ab",
-		"name": "1ra Entrega",
+		"name": "2da Entrega",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "31217540"
 	},
@@ -19,12 +19,21 @@
 					"response": []
 				},
 				{
+					"name": "get Products Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/api/products/group/categorys"
+					},
+					"response": []
+				},
+				{
 					"name": "get Products Limit",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/products?limit=2",
+							"raw": "http://localhost:8080/api/products?limit=2&sort=aaa",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -39,6 +48,49 @@
 									"key": "limit",
 									"value": "2",
 									"description": "limite de productos a enviar"
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"description": "pagina de la paginacion",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "aaa",
+									"description": "ordenamiento"
+								},
+								{
+									"key": "campo1",
+									"value": "_id",
+									"description": "nombre de la columna a filtrar",
+									"disabled": true
+								},
+								{
+									"key": "filtro1",
+									"value": "657f74321a08d129f8cb9caf",
+									"description": "filtro",
+									"disabled": true
+								},
+								{
+									"key": "campo2",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filtro2",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "campo3",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "filtro3",
+									"value": "",
+									"disabled": true
 								}
 							]
 						}
@@ -50,7 +102,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/api/products/657f74321a08d129f8cb9caf"
+						"url": "http://localhost:8080/api/products/657f74321a08d129f8cb9cb5"
 					},
 					"response": []
 				},
@@ -180,7 +232,7 @@
 					"response": []
 				},
 				{
-					"name": "post Product",
+					"name": "Product",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -203,16 +255,16 @@
 			"name": "Carrito",
 			"item": [
 				{
-					"name": "get Carts id",
+					"name": "Carts id",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/api/carts/658b802284c66d4d9465dc55"
+						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368"
 					},
 					"response": []
 				},
 				{
-					"name": "post Carts - crear carrito",
+					"name": "Carts - crear carrito",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -221,20 +273,29 @@
 					"response": []
 				},
 				{
-					"name": "post Carts agregar producto",
+					"name": "Carts - actualizar array de productos",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
-						"url": "http://localhost:8080/api/carts/658b802284c66d4d9465dc55/product/1"
+						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368"
 					},
 					"response": []
 				},
 				{
-					"name": "post Carts agregar producto",
+					"name": "Carts agregar producto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368/product/657f74321a08d129f8cb9caf"
+					},
+					"response": []
+				},
+				{
+					"name": "Carts sacar producto",
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://localhost:8080/api/carts/658b802284c66d4d9465dc55/product/1"
+						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368/product/657f74321a08d129f8cb9caf"
 					},
 					"response": []
 				}
