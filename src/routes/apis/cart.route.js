@@ -33,6 +33,28 @@ router.post('/', async (req, res) => {
   });
 });
 
+// POST http://localhost:8080/api/carts/
+router.post('/:cid', async (req, res) => {
+  const cid = req.params.cid;
+  const array = req.body
+
+  console.log(cid, array);
+
+  const resp = await carrito.updateCart(cid, array);
+
+  if (typeof resp === 'string') {
+    res.status(400).json({
+      status: 'fail',
+      data: resp,
+    });
+  } else {
+    res.status(200).json({
+      status: 'ok',
+      data: resp,
+    });
+  }
+});
+
 // POST http://localhost:8080/api/carts/:cid/product/:pid
 router.post('/:cid/product/:pid', async (req, res) => {
   const cid = req.params.cid;
@@ -72,4 +94,5 @@ router.delete('/:cid/product/:pid', async (req, res) => {
     });
   }
 });
+
 exports.cartsRouter = router;

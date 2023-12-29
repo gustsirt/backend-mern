@@ -27,9 +27,12 @@ class ProductDaoMongo {
 
   getProductsById = async (pid) => {
     try {
-      return await this.model.find({ _id: pid});
+      const result = await this.model.find({ _id: pid});
+      if ( result.length === 0) {return "Producto no encontrado"}
+      return result
     } catch (error) {
       console.log(error);
+      return "Ha ocurrido un error al buscar el producto"
     }
   };
   

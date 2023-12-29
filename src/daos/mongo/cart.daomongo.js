@@ -1,5 +1,7 @@
 const { ObjectId } = require("bson");
 const { cartModel } = require("./models/carts.model.js");
+const { ProductMongo } = require("./products.daomongo.js");
+const products = new ProductMongo();
 
 class CartDaoMongo {
   constructor() {
@@ -14,43 +16,59 @@ class CartDaoMongo {
     }
   }
 
-  // FIXME: falta la validacion cuando el codigo no existe
   async getCarts( cid ) {
     try {
-      return await this.model.findOne({_id: cid})
+      let cart = await this.model.findOne({_id: cid})
+      if (cart==null) {return "Carrito no encontrado"}
+      return cart
     } catch (error) {
-      console.log(error);
+      //console.log(error);
+      return "Ocurrio un error al buscar el carrito"
     }
   }
 
-  // FIXME: falta la validacion cuando el codigo no existe
   async addProduct(cid, productId) {
     try {
-      let cart = await this.model.findOne({_id: cid})
+      let cart = await this.getCarts(cid);
+      if (typeof(cart) == "string") {return "Carrito no encontrado"}
+      let product = await products.getProductsById(productId)
+      if (typeof(product) == "string") {return "Producto no encontrado"}
+
       cart.products.push({product: productId})
       await this.model.updateOne({_id: cid}, cart)
       return await this.model.findOne({_id: cid})
 
     } catch (error) {
+      //console.log(error);
       return "Ocurrio un error al agregar el producto"
     }
   }
 
-  // FIXME: falta la validacion cuando el codigo no existe
+  async updateCart(cid, array) {
+    try {
+      
+    } catch (error) {
+      console.error(error);
+      return "Ha ocurrido un error"
+    }
+  }
+
   async removeProduct(cid, productId) {
     try {
-      const Cart = await this.getCarts(cid)
-      const newCart = {...Cart._doc}
-      const i = newCart.cart.findIndex((elm) => elm.productId === productId)
+      let cart = await this.getCarts(cid);
+      if (typeof(cart) == "string") {return "Carrito no encontrado"}
+      let product = await products.getProductsById(productId)
+      if (typeof(product) == "string") {return "Producto no encontrado"}
 
-      if (i === -1) {
-        return "Producto no encontrado"
-      } else {
-        newCart.cart.splice(i,1)
-      }
-      return await this.model.updateOne({_id: new ObjectId(cid)}, newCart)
+      const result = await this.model.updateOne({ _id: cid }, {
+        $pull: {
+          products: { product: productId }
+        }
+      })
+      return await this.getCarts(cid);
     } catch (error) {
       console.log(error);
+      return "Ocurrio un error al tratar de eliminar el producto"
     }
   }
 
