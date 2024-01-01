@@ -19,7 +19,6 @@ class ProductDaoMongo {
       if (typeof categories === 'string') {
         return 'Hubo un error en la petición';
       }
-      console.log("category: ",categories.includes(filters.category));
       if (categories.includes(filters.category)) {
         query['category'] = filters.category;
       }
@@ -43,7 +42,7 @@ class ProductDaoMongo {
 
     try {
       const result = await this.model.paginate(query, options);
-      console.log(query, options);
+      //console.log(query, options);
       return result
     } catch (error) {
       return 'Hubo un error en la petición';
