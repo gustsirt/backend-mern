@@ -11,8 +11,8 @@ router.get('/', async (req, res) => {
   const { page = 1 } = req.query
   let resp = await fetch(`http://localhost:8080/api/products?page=${page}&limit=5`);
   resp = await resp.json()
-  const product = resp.payload;
-  //console.log(resp)
+  const product = await resp.payload;
+  console.log("product: ",product)
 
   product.forEach(prd => {
     prd.price = new Intl.NumberFormat('es-ES', {style: 'decimal'}).format(prd.price)

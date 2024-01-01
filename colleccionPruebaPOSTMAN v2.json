@@ -256,10 +256,41 @@
 			"item": [
 				{
 					"name": "Carts id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368"
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/carts/6591b1a1419b33fbcb57e2b1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"carts",
+								"6591b1a1419b33fbcb57e2b1"
+							],
+							"query": [
+								{
+									"key": "populate",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -277,7 +308,34 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
-						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368"
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"product\": \"657f74321a08d129f8cb9cb2\",\r\n        \"quantity\": 1\r\n    },\r\n        {\r\n        \"product\": \"657f74321a08d129f8cb9caf\",\r\n        \"quantity\": 2\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/carts/6591b1a1419b33fbcb57e2b1"
+					},
+					"response": []
+				},
+				{
+					"name": "Carts - actualizar array de productos Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"quantity\": 3 }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/carts/6591b1a1419b33fbcb57e2b1/product/657f74321a08d129f8cb9cb2"
 					},
 					"response": []
 				},
@@ -286,7 +344,7 @@
 					"request": {
 						"method": "POST",
 						"header": [],
-						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368/product/657f74321a08d129f8cb9caf"
+						"url": "http://localhost:8080/api/carts/6591b26b44c155e2e3d6f47a/product/657f74321a08d129f8cb9caf"
 					},
 					"response": []
 				},
@@ -296,6 +354,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": "http://localhost:8080/api/carts/658e2082ba56b7a6e2467368/product/657f74321a08d129f8cb9caf"
+					},
+					"response": []
+				},
+				{
+					"name": "Cart sacar todos los productos",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8080/api/carts/6591b26b44c155e2e3d6f47a"
 					},
 					"response": []
 				}

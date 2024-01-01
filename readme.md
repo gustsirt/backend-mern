@@ -8,7 +8,7 @@
 * Tutor: Mariano Lopez
 
 
-### Se inicia con: npm run dev:npm
+### Se inicia con: npm run dev  o nom run nodemon
 
 ---
 
