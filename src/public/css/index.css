@@ -91,7 +91,7 @@ body .swiper-container .swiper-filter .groupFilter .titleFilter {
 body .swiper-container .swiper-filter .groupFilter div {
   display: flex;
 }
-body .swiper-container .swiper-filter .groupFilter div a {
+body .swiper-container .swiper-filter .groupFilter div a, body .swiper-container .swiper-filter .groupFilter div button {
   margin: 0 0.25rem;
 }
 body .swiper-container .swiper-wrapper {

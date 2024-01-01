@@ -22,9 +22,11 @@ router.get('/', async (req, res) => {
     campo3,
     filtro3,
   } = req.query;
+  availability = availability==true
+  console.log("availability: ", availability, availability!=false);
   const filters = {
     limit,
-    page: page * 1 || 1,
+    page: page || 1,
     query: {},
   };
 

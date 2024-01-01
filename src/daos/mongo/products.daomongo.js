@@ -9,30 +9,31 @@ class ProductDaoMongo {
   getProducts = async (filters) => {
     const query = filters.query;
     const options = {
-      limit: filters.limit,
-      page: filters.page,
+      limit: filters.limit*1,
+      page: filters.page*1,
     };
 
-    //const categories = await this.getCategorys()
-    const categories = ['ruta', 'mtb'];
-    if (typeof categories === 'string') {
-      return 'Hubo un error en la petición';
-    }
-    if (categories.includes(filters.category)) {
-      query['category'] = filters.category;
-    } else {
-      return 'Hubo un error en la petición: la categoria buscada no existe';
+    if (filters.category) {
+      const categories = await this.getCategorys()
+      //const categories = ['ruta', 'mtb'];
+      if (typeof categories === 'string') {
+        return 'Hubo un error en la petición';
+      }
+      console.log("category: ",categories.includes(filters.category));
+      if (categories.includes(filters.category)) {
+        query['category'] = filters.category;
+      }
     }
 
     if (filters.availability) {
-      query['stock'] = { $gt: 10 };
+      query['stock'] = { $gt: 0 };
     }
 
     if (filters.sort * 1 === 1 || filters.sort * 1 === -1) {
-      options["sort"] = { price: filters.sort*1 };
+      options['sort'] = { price: filters.sort * 1 };
     }
     if (filters.sort === 'asc' || filters.sort === 'desc') {
-      options["sort"] = { price: filters.sort };
+      options['sort'] = { price: filters.sort };
     }
 
     const filter = { limit: filters.limit * 1, page: filters.page };
@@ -40,11 +41,10 @@ class ProductDaoMongo {
       filter['sort'] = filters.sort;
     }
 
-    console.log(filters);
-    console.log(query, options);
-
     try {
-      return await this.model.paginate(query, options);
+      const result = await this.model.paginate(query, options);
+      console.log(query, options);
+      return result
     } catch (error) {
       return 'Hubo un error en la petición';
     }
