@@ -6,8 +6,35 @@ const router = Router();
 //const productsMock = new PManager('./src/daos/file/mock/Productos.json');
 const productsMongo = new ProductMongo();
 
-// ruta: /
 router.get('/', async (req, res) => {
+  res.redirect("/products");
+})
+
+router.get('/products/:pid', async (req, res) => {
+  const pid = req.params.pid;
+
+  let resp = await fetch(`http://localhost:8080/api/products/${pid}`);
+  resp = await resp.json();
+  console.log(resp);
+
+  const product = resp.payload
+
+  if (resp.status == "ok") {
+    res.render('product',{
+      title: 'Producto',
+      productError: false,
+      product
+    })
+  } else {
+    res.render('product',{
+      title: 'Producto',
+      productError: true
+    })
+  }
+})
+
+
+router.get('/products', async (req, res) => {
   // handle fetching products
   const { page = 1, sort, category, availability } = req.query;
   let others = '';
@@ -36,6 +63,7 @@ router.get('/', async (req, res) => {
         prd.price,
       );
       prd['unavailability'] = prd.stock == 0;
+      prd['link'] = `/products/${prd._id}`;
     });
   }
   //console.log(productError, product);
@@ -56,20 +84,20 @@ router.get('/', async (req, res) => {
   }
 
   function filterUrl(array, filter) {
-    if (!workingUrl) return '/?';
+    if (!workingUrl) return '/products?';
     //let array = string.split('&');
     array = array.filter((elm) => elm.split('=')[0] != filter);
     array = array.filter((elm) => elm.split('=')[0] != 'page');
     if (array.length === 0) {
-      finalText = '/?';
+      finalText = '/products?';
     } else {
-      finalText = '/?' + array.join('&') + '&';
+      finalText = '/products?' + array.join('&') + '&';
     }
     return finalText;
   }
   const url = filterUrl(arrayString, 'category');
 
-  res.render('home', {
+  res.render('products', {
     title: 'Inicio',
     pageError,
     productError,
@@ -89,6 +117,7 @@ router.get('/', async (req, res) => {
     url,
   });
 });
+
 
 router.get('/realTimeProducts', async (req, res) => {
   let resp = await fetch(`http://localhost:8080/api/products?limit=100`);

@@ -84,6 +84,21 @@ body {
     }
   }
 
+  .productsContainer {
+    margin: 2rem;
+    background-color: #009bdd59;
+    width: 100%;
+    text-align: center;
+
+    .product{
+      @extend .swiper-container;
+
+      img {
+        max-width: 50vh;
+      }
+    }
+  }
+
   .formRTP{
     background-color: lightgray;
     padding: 0.5rem;

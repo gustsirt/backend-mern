@@ -35,7 +35,7 @@
       {{else}}
         {{#each product}}
           <div class="swiper-slide">
-            <img src={{this.thumbnail}}>
+            <a href="{{this.link}}"><img src={{this.thumbnail}}></a>
             <p class="sw-title">{{this.title}}</p>
             <p class="sw-price">$ {{this.price}}</p>
             {{#if this.unavailability}}<p>SIN STOCK</p>{{/if}}
