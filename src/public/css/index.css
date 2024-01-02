@@ -64,6 +64,10 @@ footer #copyright {
 body {
   background-color: gray;
 }
+body .pageAlert {
+  margin: 2rem;
+  color: red;
+}
 body .swiper-container {
   margin: 2rem 0;
   background-color: rgba(0, 155, 221, 0.3490196078);

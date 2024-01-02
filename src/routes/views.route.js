@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
 
   // inform error
   let productError = false;
+  let pageError = false;
   if (resp.status === 'error') {
     productError = true;
   }
@@ -39,14 +40,26 @@ router.get('/', async (req, res) => {
   }
   //console.log(productError, product);
 
-  // update url
+  // update url and security
   let workingUrl = req.url.split('?')[1];
+  let arrayString;
 
-  function filterUrl(string, filter) {
+  if (workingUrl) {
+    arrayString = workingUrl.split('&');
+
+    let secPage = arrayString.findIndex((elm) => elm.split('=')[0] == 'page');
+    if (secPage != -1) {
+      secPage = arrayString[secPage].split('=')[1]
+      if (secPage > resp.totalPages || secPage < 0) {
+        pageError = true;
+    }}
+  }
+
+  function filterUrl(array, filter) {
     if (!workingUrl) return '/?';
-    let array = string.split('&');
+    //let array = string.split('&');
     array = array.filter((elm) => elm.split('=')[0] != filter);
-    array = array.filter((elm) => elm.split('=')[0] != "page");
+    array = array.filter((elm) => elm.split('=')[0] != 'page');
     if (array.length === 0) {
       finalText = '/?';
     } else {
@@ -54,25 +67,25 @@ router.get('/', async (req, res) => {
     }
     return finalText;
   }
-  const url = filterUrl(workingUrl, 'category');
+  const url = filterUrl(arrayString, 'category');
 
   res.render('home', {
     title: 'Inicio',
+    pageError,
     productError,
     product,
     page: resp.page,
     totalPages: resp.totalPages,
     hasPrevPage: resp.hasPrevPage,
     hasNextPage: resp.hasNextPage,
-    prevLink: `${filterUrl(workingUrl, 'x')}${resp.prevLink}`,
-    nextLink: `${filterUrl(workingUrl, 'x')}${resp.nextLink}`,
+    prevLink: `${filterUrl(arrayString, 'x')}${resp.prevLink}`,
+    nextLink: `${filterUrl(arrayString, 'x')}${resp.nextLink}`,
     category: await productsMongo.getCategorys(),
-    ascend: `${filterUrl(workingUrl, 'sort')}sort=asc`,
-    descend: `${filterUrl(workingUrl, 'sort')}sort=desc`,
-    disorderly: `${filterUrl(workingUrl, 'sort')}sort=disorderly`,
-    availability: `${filterUrl(workingUrl, 'availability')}availability=false`,
-    unavailability: `${filterUrl(workingUrl, 'availability')}availability=true`,
-    filters: 'aqui van filtros ' + resp.page,
+    ascend: `${filterUrl(arrayString, 'sort')}sort=asc`,
+    descend: `${filterUrl(arrayString, 'sort')}sort=desc`,
+    disorderly: `${filterUrl(arrayString, 'sort')}sort=disorderly`,
+    availability: `${filterUrl(arrayString, 'availability')}availability=false`,
+    unavailability: `${filterUrl(arrayString, 'availability')}availability=true`,
     url,
   });
 });

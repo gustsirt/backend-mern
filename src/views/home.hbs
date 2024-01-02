@@ -1,6 +1,9 @@
 <main>
   <div class="swiper-container">
     <h3>PRODUCTOS</h3>
+    {{#if pageError}}
+      <p class="pageAlert"><strong>AH INTRODUCIDO UNA PAGINA INCORRECTA</strong></p>
+    {{else}}
     <div class="swiper-filter">
       <h4>FILTROS:</h4>
       <div class="groupFilter">
@@ -26,9 +29,6 @@
         </div>
       </div>
     </div>
-    <div class="swiper-displayfilter" id="filters">
-      <p>{{filters}}</p>
-    </div>
     <div class="swiper-wrapper">
       {{#if productError}}
         <p>Se ha producido un error al momento de cargar los productos</p>
@@ -48,5 +48,6 @@
       <p id="pages"><span id="thisPage">{{page}}</span> de <span id="totalPages">{{totalPages}}</span></p>
       {{#if hasNextPage}}<a id="nextPage" href="{{nextLink}}"><i class='bx bx-chevrons-right'></i></a>{{/if}}
     </div>
+    {{/if}}
   </div>
 </main>
