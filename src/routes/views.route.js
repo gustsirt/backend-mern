@@ -1,6 +1,6 @@
 const { Router } = require('express');
 //const { PManager } = require('../daos/file/ProductManager');
-const { ProductMongo } = require('../daos/mongo/products.daomongo');
+const { ProductMongo } = require('../daos/mongo/products.daomongo.js');
 const router = Router();
 
 //const productsMock = new PManager('./src/daos/file/mock/Productos.json');
@@ -9,30 +9,6 @@ const productsMongo = new ProductMongo();
 router.get('/', async (req, res) => {
   res.redirect("/products");
 })
-
-router.get('/products/:pid', async (req, res) => {
-  const pid = req.params.pid;
-
-  let resp = await fetch(`http://localhost:8080/api/products/${pid}`);
-  resp = await resp.json();
-  console.log(resp);
-
-  const product = resp.payload
-
-  if (resp.status == "ok") {
-    res.render('product',{
-      title: 'Producto',
-      productError: false,
-      product
-    })
-  } else {
-    res.render('product',{
-      title: 'Producto',
-      productError: true
-    })
-  }
-})
-
 
 router.get('/products', async (req, res) => {
   // handle fetching products
@@ -118,6 +94,53 @@ router.get('/products', async (req, res) => {
   });
 });
 
+router.get('/products/:pid', async (req, res) => {
+  const objectRender = { title: 'Producto' }
+  const pid = req.params.pid;
+
+  let resp = await fetch(`http://localhost:8080/api/products/${pid}`);
+  resp = await resp.json();
+
+  const product = resp.payload;
+
+  if (resp.status == "ok") {
+    objectRender['productError'] = false
+    objectRender['product'] = product
+    objectRender['cart'] = `6591b1a1419b33fbcb57e2b1`
+  } else {
+    objectRender['productError'] = true
+  }
+  //console.log(objectRender);
+  res.render('product', objectRender)
+})
+
+router.get('/cart', async (req, res) => {
+  const objectRender = { title: 'Carrito' }
+  let resp = await await fetch(
+    `http://localhost:8080/api/carts/6591b1a1419b33fbcb57e2b1`,
+  );
+  resp = await resp.json();
+  const cart = resp.payload;
+  const products = cart.products;
+  products.forEach(prd => {
+    prd['total'] = prd.product.price * prd.quantity;
+  })
+
+  if (resp.status == "ok") {
+    objectRender['cartError'] = false;
+    objectRender['cartId'] = cart._id;
+
+    if(products.length != 0) {
+      objectRender['cartNoEmpty'] = true;
+      objectRender['products'] = products;
+    } 
+
+  } else {
+    objectRender['cartError'] = true
+  }
+
+  res.render('cart', objectRender)
+})
 
 router.get('/realTimeProducts', async (req, res) => {
   let resp = await fetch(`http://localhost:8080/api/products?limit=100`);

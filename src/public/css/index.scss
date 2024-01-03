@@ -99,6 +99,19 @@ body {
     }
   }
 
+  .cartContainer {
+    @extend .swiper-container;
+
+    .product{
+      display: flex;
+      width: 90%;
+      justify-content: space-between;
+
+      img {
+        max-width: 10vh;
+      }
+    }
+  }
   .formRTP{
     background-color: lightgray;
     padding: 0.5rem;
