@@ -1,3 +1,4 @@
+const { CustomError } = require('../helpers/handleErrrors.js');
 
 module.exports = function (server) {
   const { Server } = require('socket.io');
@@ -15,13 +16,22 @@ module.exports = function (server) {
   
     //REAL TIME PRODUCT
     ios.on('nuevoProducto', async newProduct => {
-      await products.addProduct(newProduct);
+      try {
+        await products.addProduct(newProduct);
 
-      let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
-      resp = await resp.json()
-      const listProduct = resp.payload;
-      
-      io.emit('productos', listProduct)
+        let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
+        resp = await resp.json()
+        const listProduct = resp.data;
+        
+        io.emit('productos', listProduct)
+
+      } catch (error) {
+        let message = 'Error interno del servidor'
+        if (error instanceof CustomError) {
+          message = error.message
+        }
+        io.emit('error', message)
+      }
     })
   
     ios.on('eliminarProducto', async code => {
@@ -29,7 +39,7 @@ module.exports = function (server) {
       
       let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
       resp = await resp.json()
-      const listProduct = resp.payload;
+      const listProduct = resp.data;
       
       io.emit('productos', listProduct)
     })

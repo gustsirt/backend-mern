@@ -64,8 +64,17 @@ footer #copyright {
 body {
   background-color: gray;
 }
-body .pageAlert {
+body .alertContainer {
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+body .alertContainer .pageAlert {
   margin: 2rem;
+  font-size: 2.5rem;
   color: red;
 }
 body .swiper-container, body .cartContainer, body .productsContainer .product {
@@ -152,12 +161,20 @@ body .cartContainer .product img {
   max-width: 10vh;
 }
 body .formRTP {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   background-color: lightgray;
   padding: 0.5rem;
   margin-bottom: 1rem;
 }
+body .formRTP .alert {
+  margin: 0.5rem;
+}
 body .formRTP .formcol {
   display: flex;
+  width: 100%;
   justify-content: space-around;
   align-items: center;
 }

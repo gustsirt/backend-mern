@@ -2,10 +2,9 @@ const { Router } = require('express');
 const { CartMongo } = require('../../daos/mongo/cart.daomongo');
 
 const router = Router();
-//const carrito = new CartManager('./src/daos/file/mock/Carts.json');
 const carrito = new CartMongo
 
-// GET http://localhost:8080/api/carts/
+// GET http://localhost:PORT/api/carts/
 router.get('/', async (req, res) => {
   let { populate } = req.query;
   populate = populate || true
@@ -13,18 +12,18 @@ router.get('/', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
 
-// GET http://localhost:8080/api/carts/:cid
+// GET http://localhost:PORT/api/carts/:cid
 router.get('/:cid', async (req, res) => {
   const id = req.params.cid;
   let { populate } = req.query;
@@ -33,35 +32,35 @@ router.get('/:cid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
 
-// POST http://localhost:8080/api/carts/ (crea carrito)
+// POST http://localhost:PORT/api/carts/ (crea carrito)
 router.post('/', async (req, res) => {
   const resp = await carrito.create();
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
 
-// PUT http://localhost:8080/api/carts/:cid + body product
+// PUT http://localhost:PORT/api/carts/:cid + body product
 router.put('/:cid', async (req, res) => {
   const cid = req.params.cid;
   const newProducts = req.body
@@ -70,7 +69,7 @@ router.put('/:cid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
+      status: 'error',
       data: resp,
     });
   } else {
@@ -81,7 +80,7 @@ router.put('/:cid', async (req, res) => {
   }
 });
 
-// DEL http://localhost:8080/api/carts/:cid + body product
+// DEL http://localhost:PORT/api/carts/:cid + body product
 router.delete('/:cid', async (req, res) => {
   const cid = req.params.cid;
 
@@ -89,7 +88,7 @@ router.delete('/:cid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
+      status: 'error',
       data: resp,
     });
   } else {
@@ -100,7 +99,7 @@ router.delete('/:cid', async (req, res) => {
   }
 });
 
-// POST http://localhost:8080/api/carts/:cid/product/:pid
+// POST http://localhost:PORT/api/carts/:cid/product/:pid
 router.post('/:cid/product/:pid', async (req, res) => {
   const {cid, pid} = req.params;
 
@@ -108,7 +107,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
+      status: 'error',
       data: resp,
     });
   } else {
@@ -119,7 +118,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
   }
 });
 
-// PUT http://localhost:8080/api/carts/:cid/product/:pid + body quantity
+// PUT http://localhost:PORT/api/carts/:cid/product/:pid + body quantity
 router.put('/:cid/product/:pid', async (req, res) => {
   const {cid, pid} = req.params;
   const {quantity} = req.body
@@ -133,7 +132,7 @@ router.put('/:cid/product/:pid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
+      status: 'error',
       data: resp,
     });
   } else {
@@ -144,7 +143,7 @@ router.put('/:cid/product/:pid', async (req, res) => {
   }
 });
 
-// DELETE http://localhost:8080/api/carts/:cid/product/:pid
+// DELETE http://localhost:PORT/api/carts/:cid/product/:pid
 router.delete('/:cid/product/:pid', async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
@@ -153,7 +152,7 @@ router.delete('/:cid/product/:pid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
+      status: 'error',
       data: resp,
     });
   } else {

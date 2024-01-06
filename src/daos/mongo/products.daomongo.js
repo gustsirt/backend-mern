@@ -1,5 +1,7 @@
 //const { ObjectId } = require('bson');
+const { validateFields } = require('../../helpers/functions.js');
 const { productModel } = require('./models/products.model.js');
+const { CustomError } = require('../../helpers/handleErrrors.js');
 
 class ProductDaoMongo {
   constructor() {
@@ -7,43 +9,37 @@ class ProductDaoMongo {
   }
 
   getProducts = async (filters) => {
-    const query = filters.query;
-    const options = {
-      limit: filters.limit*1,
-      page: filters.page*1,
-    };
-
-    if (filters.category) {
-      const categories = await this.getCategorys()
-      //const categories = ['ruta', 'mtb'];
-      if (typeof categories === 'string') {
-        return 'Hubo un error en la petición';
-      }
-      if (categories.includes(filters.category)) {
-        query['category'] = filters.category;
-      }
-    }
-
-    if (filters.availability) {
-      query['stock'] = { $gt: 0 };
-    }
-
-    if (filters.sort * 1 === 1 || filters.sort * 1 === -1) {
-      options['sort'] = { price: filters.sort * 1 };
-    }
-    if (filters.sort === 'asc' || filters.sort === 'desc') {
-      options['sort'] = { price: filters.sort };
-    }
-
-    const filter = { limit: filters.limit * 1, page: filters.page };
-    if (filters.sort) {
-      filter['sort'] = filters.sort;
-    }
-
     try {
-      const result = await this.model.paginate(query, options);
-      //console.log(query, options);
-      return result
+      const query = filters.query || {};
+      const options = {
+        limit: Number(filters.limit),
+        page: Number(filters.page),
+      };
+
+      if (filters.category) {
+        const categories = await this.getCategorys();
+        if (
+          Array.isArray(categories) &&
+          categories.includes(filters.category)
+        ) {
+          query.category = filters.category;
+        }
+      }
+
+      if (filters.availability) {
+        query.stock = { $gt: 0 };
+      }
+
+      const sortOptions = {
+        '1': 1,
+        '-1': -1,
+        asc: 'asc',
+        desc: 'desc',
+      };
+      const validateSort = sortOptions[filters.sort];
+      if (validateSort) options.sort = validateSort;
+
+      return await this.model.paginate(query, options);
     } catch (error) {
       return 'Hubo un error en la petición';
     }
@@ -51,66 +47,46 @@ class ProductDaoMongo {
 
   getProductsById = async (pid) => {
     try {
-      const result = await this.model.find({ _id: pid }).lean();
+      const product = await this.model.findById({ _id: pid }).lean();
 
-      if (result.length === 0) {
+      if (!product) {
         return 'Producto no encontrado';
       }
-      return result[0];
+      return product;
     } catch (error) {
       return 'Ha ocurrido un error al buscar el producto';
     }
   };
 
-  addProduct = async ({
-    title,
-    description,
-    code,
-    price,
-    stock,
-    status = true,
-    category,
-    thumbnail,
-  }) => {
+  addProduct = async (fields) => {
+    const requiredFields = [
+      'title',
+      'description',
+      'code',
+      'price',
+      'stock',
+      'status',
+      'category',
+      'thumbnail',
+    ];
     try {
-      if (
-        !title ||
-        !description ||
-        !code ||
-        !price ||
-        !stock ||
-        !status ||
-        !category ||
-        !thumbnail
-      ) {
-        if (!title) return 'ERROR: debe completar el titulo';
-        if (!description) return 'ERROR: debe completar la descripción';
-        if (!code) return 'ERROR: debe completar el Código';
-        if (!price) return 'ERROR: debe completar el Precio';
-        if (!stock) return 'ERROR: debe completar el Stock';
-        if (!status) return 'ERROR: debe completar el Estado';
-        if (!category) return 'ERROR: debe completar la Categoria';
-        if (!thumbnail) return 'ERROR: debe completar la Imagen';
-        return 'ERROR: debe completar todos los campos';
+      const newProduct = validateFields(fields, requiredFields);
+      if (typeof newProduct === 'string') {
+        return newProduct;
       }
-
-      const newProduct = {
-        title: title,
-        description: description,
-        code: code,
-        price: price,
-        status: status,
-        stock: stock,
-        category: category,
-        thumbnail: thumbnail,
-      };
 
       return await this.model.create(newProduct);
     } catch (error) {
-      if (error.code === 11000) {
-        return 'ERROR: codigo repetido';
+      if (error instanceof CustomError) {
+        error.addContext('addProduct');
+        throw error; 
+      } else if (error.code === 11000) {
+        // Si es un error de código duplicado en MongoDB
+        throw new CustomError(`ERROR: Código repetido`, 400, 'addProduct');
+      } else {
+        // Para otros errores no controlados
+        throw new CustomError(`Verificar ERROR de mongoose código: ${error.code}`, 400, 'addProduct');
       }
-      return 'Verificar ERROR de mongoose codigo: ' + error.code;
     }
   };
 
@@ -162,13 +138,13 @@ class ProductDaoMongo {
 
   getCategorys = async () => {
     try {
-      const list = await this.model.aggregate([
+      const categories = await this.model.aggregate([
         { $group: { _id: '$category' } },
+        { $sort: { _id: 1 } },
       ]);
-      const arrayCategory = list.map((x) => {
+      return categories.map((x) => {
         return x._id;
       });
-      return arrayCategory;
     } catch (error) {
       return 'Ocurrio un Error';
     }

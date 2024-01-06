@@ -1,17 +1,15 @@
 const { Router } = require('express');
 const { ProductMongo } = require('../../daos/mongo/products.daomongo');
-//const { productModel } = require('../../daos/mongo/models/products.model');
+const { CustomError } = require('../../helpers/handleErrrors.js');
 
 const router = Router();
-
-//const products = new ProductManager('./src/daos/file/mock/Productos.json');
 const products = new ProductMongo();
 
-// GET http://localhost:8080/api/products + ? limit, page, sort, query
+// GET http://localhost:PORT/api/products + ? limit, page, sort, query
 router.get('/', async (req, res) => {
   let {
     limit = 10,
-    page,
+    page = 1,
     category,
     availability = true,
     sort,
@@ -22,14 +20,14 @@ router.get('/', async (req, res) => {
     campo3,
     filtro3,
   } = req.query;
-  availability = availability==true || availability=='true'
 
   const filters = {
     limit,
-    page: page || 1,
+    page,
     query: {},
   };
 
+  availability = availability == true || availability == 'true';
   if (category) {
     filters.category = category;
   }
@@ -48,73 +46,76 @@ router.get('/', async (req, res) => {
   if (campo3 && filtro3) {
     filters.query[campo3] = filtro3;
   }
-  const resp = await products.getProducts(filters);
-  //console.log((resp));
 
-  let prevLink = resp.prevPage ? `page=${resp.prevPage}` : '';
-  let nextLink = resp.nextPage ? `page=${resp.nextPage}` : '';
-  //if (resp.hasPrevPage)
+  const resp = await products.getProducts(filters);
+
+  const { prevPage, nextPage } = resp;
+  const prevLink = prevPage ? `?page=${prevPage}` : '';
+  const nextLink = nextPage ? `?page=${nextPage}` : '';
 
   if (typeof resp === 'string') {
     res.status(400).json({
       status: 'error',
-      payload: resp,
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'success',
-      payload: resp.docs,
-      totalPages: resp.totalPages,
-      prevPage: resp.prevPage,
-      nextPage: resp.nextPage,
-      page: resp.page,
-      hasPrevPage: resp.hasPrevPage,
-      hasNextPage: resp.hasNextPage,
+      ...resp,
       prevLink: prevLink,
       nextLink: nextLink,
     });
   }
 });
 
-// GET http://localhost:8080/api/products/:pid
+// GET http://localhost:PORT/api/products/:pid
 router.get('/:pid', async (req, res) => {
-  const pid = req.params.pid;
+  const { pid } = req.params;
 
   const getProducts = await products.getProductsById(pid);
 
   if (typeof getProducts === 'string') {
     res.status(404).json({
-      status: 'fail',
-      payload: getProducts,
+      status: 'error',
+      data: getProducts,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: getProducts,
+      data: getProducts,
     });
   }
 });
 
-// POST http://localhost:8080/api/products/ + body: whole product
+// POST http://localhost:PORT/api/products/ + body: whole product
 router.post('/', async (req, res) => {
   const newProduct = req.body;
 
-  const resp = await products.addProduct(newProduct);
-
-  if (typeof resp === 'string') {
-    res.status(400).json({
-      status: 'fail',
-      payload: resp,
-    });
-  } else {
+  try {
+    const resp = await products.addProduct(newProduct);
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
+  } catch (error) {
+    if (error instanceof CustomError) {
+      // Aquí puedes acceder al contexto y mostrarlo al usuario
+      const context = error.getContext();
+      res.status(error.statusCode || 500).json({
+        status: 'error',
+        message: error.getMessage(),
+      });
+    } else {
+      // Para otros errores no controlados
+      res.status(500).json({
+        status: 'error',
+        message: 'Error interno del servidor',
+      });
+    }
   }
 });
 
-// PUT http://localhost:8080/api/products/:pid + body: whole product
+// PUT http://localhost:PORT/api/products/:pid + body: whole product
 router.put('/:pid', async (req, res) => {
   const pid = req.params.pid;
   const changedProduct = req.body;
@@ -123,18 +124,18 @@ router.put('/:pid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
 
-// DELETE http://localhost:8080/api/products/:pid
+// DELETE http://localhost:PORT/api/products/:pid
 router.delete('/:pid', async (req, res) => {
   const pid = req.params.pid;
 
@@ -142,18 +143,18 @@ router.delete('/:pid', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
 
-// DELETE http://localhost:8080/api/products?code=x
+// DELETE http://localhost:PORT/api/products?code=x
 router.delete('/', async (req, res) => {
   const pcode = req.query.code;
 
@@ -161,31 +162,50 @@ router.delete('/', async (req, res) => {
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
 
-// GET http://localhost:8080/api/products/categorys
+// GET http://localhost:PORT/api/products/group/categorys
 router.get('/group/categorys', async (req, res) => {
   const resp = await products.getCategorys();
 
   if (typeof resp === 'string') {
     res.status(400).json({
-      status: 'fail',
-      payload: resp,
+      status: 'error',
+      data: resp,
     });
   } else {
     res.status(200).json({
       status: 'ok',
-      payload: resp,
+      data: resp,
     });
   }
 });
+
+router.get('/group/pruebas/:valor', async (req, res) => {
+  const { valor } = req.params;
+
+  const sortOptions = {
+    '1': 1,
+    '-1': -1,
+    asc: 'asc',
+    desc: 'desc',
+  };
+
+  const resp = sortOptions[valor];
+  console.log(resp);
+  res.json({
+    status: 'ok',
+    data: resp,
+  });
+});
+
 exports.productsRouter = router;

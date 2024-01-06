@@ -1,15 +1,16 @@
+require('dotenv').config();
+
 const express = require('express');
 const { createServer} = require('node:http');
-const serverIo = require('./routes/serverIO.js');
+const serverIo = require('./middleware/serverIO.js');
+
 const {connectDB} = require('./config/index.js');
-//const session = require('express-session');
-//const cookieParser = require('cookie-parser');
 
 const handlebars = require('express-handlebars');
 const { viewsRouter } = require('./routes/views.route.js');
 const appRouter     = require('./routes');
 
-const port = 8080;
+const port = process.env.PORT;
 const app = express();
 const server = createServer(app)
 serverIo(server)
@@ -20,14 +21,7 @@ connectDB()
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
-/*app.use(session({
-  secret: 'palabraSecretaa',
-  resave: true,
-  saveUninitialized: true
-}))
-app.use(cookieParser('palabraSecretaa'));*/
 
-// motor de plantilla
 app.engine('hbs', handlebars.engine({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');

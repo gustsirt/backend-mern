@@ -12,4 +12,4 @@ router.post('/setcookies', (req, res) => {})
 router.get('/getcookies', (req, res) => {})
 router.delete('/deletecookies', (req, res) => {})
 
-module.exports = router 
+exports.sessionRouter = router;
