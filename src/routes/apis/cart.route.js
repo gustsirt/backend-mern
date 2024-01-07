@@ -163,4 +163,4 @@ router.delete('/:cid/product/:pid', async (req, res) => {
   }
 });
 
-exports.cartsRouter = router;
+module.exports = router;

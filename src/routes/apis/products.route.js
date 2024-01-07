@@ -1,89 +1,86 @@
 const { Router } = require('express');
 const { ProductMongo } = require('../../daos/mongo/products.daomongo');
-const { CustomError } = require('../../helpers/handleErrrors.js');
+const { CustomError } = require('../../helpers/errors.js');
+const { responseError, responseCatchError, responseJson } = require('../../helpers/index.js');
 
 const router = Router();
 const products = new ProductMongo();
 
 // GET http://localhost:PORT/api/products + ? limit, page, sort, query
 router.get('/', async (req, res) => {
-  let {
-    limit = 10,
-    page = 1,
-    category,
-    availability = true,
-    sort,
-    campo1,
-    filtro1,
-    campo2,
-    filtro2,
-    campo3,
-    filtro3,
-  } = req.query;
+  try {
+    let {
+      limit = 10,
+      page = 1,
+      category,
+      availability,
+      sort,
+      campo1,
+      filtro1,
+      campo2,
+      filtro2,
+      campo3,
+      filtro3,
+    } = req.query;
 
-  const filters = {
-    limit,
-    page,
-    query: {},
-  };
+    const query = {};
+    const options = { limit, page };
+    availability = availability == true || availability == 'true';
+    if (category) {
+      query.category = category;
+    }
+    if (availability) {
+      query.availability = availability;
+    }
+    if (sort) {
+      options.sort = sort;
+    }
+    if (campo1 && filtro1) {
+      query[campo1] = filtro1;
+    }
+    if (campo2 && filtro2) {
+      query[campo2] = filtro2;
+    }
+    if (campo3 && filtro3) {
+      query[campo3] = filtro3;
+    }
 
-  availability = availability == true || availability == 'true';
-  if (category) {
-    filters.category = category;
-  }
-  if (availability) {
-    filters.availability = availability;
-  }
-  if (sort) {
-    filters.sort = sort;
-  }
-  if (campo1 && filtro1) {
-    filters.query[campo1] = filtro1;
-  }
-  if (campo2 && filtro2) {
-    filters.query[campo2] = filtro2;
-  }
-  if (campo3 && filtro3) {
-    filters.query[campo3] = filtro3;
-  }
+    const resp = await products.getProducts(query, options);
 
-  const resp = await products.getProducts(filters);
+    const { prevPage, nextPage } = resp;
+    const prevLink = prevPage ? `?page=${prevPage}` : '';
+    const nextLink = nextPage ? `?page=${nextPage}` : '';
 
-  const { prevPage, nextPage } = resp;
-  const prevLink = prevPage ? `?page=${prevPage}` : '';
-  const nextLink = nextPage ? `?page=${nextPage}` : '';
-
-  if (typeof resp === 'string') {
-    res.status(400).json({
-      status: 'error',
-      data: resp,
-    });
-  } else {
-    res.status(200).json({
-      status: 'success',
+    responseJson(res, 200, {
       ...resp,
       prevLink: prevLink,
       nextLink: nextLink,
     });
+  } catch (error) {
+    console.log(error);
+    if (error instanceof CustomError) {
+      responseCatchError(res, error);
+    } else {
+      responseError(res, 'An error occurred in the API request', 500, 'GET http://localhost:PORT/api/products');
+    }
   }
 });
 
-// GET http://localhost:PORT/api/products/:pid
+// GET http://localhost:PORT/api/products/:pid     ----  FALTA OPTIMIZAR
 router.get('/:pid', async (req, res) => {
-  const { pid } = req.params;
+  try {
+    const { pid } = req.params;
+    const product = await products.getProductsById(pid);
+    const error =  product? false : true;
 
-  const getProducts = await products.getProductsById(pid);
-
-  if (typeof getProducts === 'string') {
-    res.status(404).json({
-      status: 'error',
-      data: getProducts,
-    });
-  } else {
-    res.status(200).json({
-      status: 'ok',
-      data: getProducts,
-    });
+    if (!error) {
+      responseJson(res, 200, product);
+    } else {
+      responseError(res, 'Product not foundt', 404, 'GET http://localhost:PORT/api/products/:pid');
+    }
+  } catch (error) {
+    console.error(error);
+    responseError(res, 'Internal Server Error', 500, 'GET http://localhost:PORT/api/products/:pid');
   }
 });
 
@@ -208,4 +205,4 @@ router.get('/group/pruebas/:valor', async (req, res) => {
   });
 });
 
-exports.productsRouter = router;
+module.exports = router;

@@ -1,32 +1,39 @@
 //const { ObjectId } = require('bson');
+const { CustomError } = require('../../helpers/errors.js');
 const { validateFields } = require('../../helpers/functions.js');
 const { productModel } = require('./models/products.model.js');
-const { CustomError } = require('../../helpers/handleErrrors.js');
 
 class ProductDaoMongo {
   constructor() {
     this.model = productModel;
   }
 
-  getProducts = async (filters) => {
+  getProducts = async (reqQuery, reqOptions) => {
+    const context = 'getProducts';
+    // los validadores pueden se un midelware
     try {
-      const query = filters.query || {};
+      // Validación de parámetros
+      if (!reqQuery || typeof reqQuery !== 'object') {
+        throw new CustomError('The "query" parameter is invalid',400,context);
+      }
+      if (!reqOptions || typeof reqOptions !== 'object') {
+        throw new CustomError('The "options" parameter is invalid',400,context);
+      }
+
+      const query = reqQuery || {};
       const options = {
-        limit: Number(filters.limit),
-        page: Number(filters.page),
+        limit: Number(reqOptions.limit) || 10,
+        page: Number(reqOptions.page) || 1,
       };
 
-      if (filters.category) {
+      if (reqQuery.category) {
         const categories = await this.getCategorys();
-        if (
-          Array.isArray(categories) &&
-          categories.includes(filters.category)
-        ) {
-          query.category = filters.category;
+        if (categories.includes(reqQuery.category)) {
+          query.category = reqQuery.category;
         }
       }
 
-      if (filters.availability) {
+      if (reqQuery.availability) {
         query.stock = { $gt: 0 };
       }
 
@@ -36,25 +43,33 @@ class ProductDaoMongo {
         asc: 'asc',
         desc: 'desc',
       };
-      const validateSort = sortOptions[filters.sort];
-      if (validateSort) options.sort = validateSort;
+      const sortValue  = sortOptions[reqOptions.sort];
+      if (sortValue ) options.sort = { price: sortValue } ;
 
       return await this.model.paginate(query, options);
     } catch (error) {
-      return 'Hubo un error en la petición';
+      console.error(error);
+      if (error instanceof CustomError) {
+        throw error;
+      } else {
+        throw new CustomError('Unidentified error', 500, context);
+      }
     }
   };
 
   getProductsById = async (pid) => {
     try {
       const product = await this.model.findById({ _id: pid }).lean();
+      return product
 
-      if (!product) {
-        return 'Producto no encontrado';
-      }
-      return product;
     } catch (error) {
-      return 'Ha ocurrido un error al buscar el producto';
+      console.error(error);
+      if (error instanceof CustomError) {
+        throw error;
+      } else {
+        throw new CustomError('Unidentified error', 500, context);
+      }
+
     }
   };
 
@@ -79,13 +94,17 @@ class ProductDaoMongo {
     } catch (error) {
       if (error instanceof CustomError) {
         error.addContext('addProduct');
-        throw error; 
+        throw error;
       } else if (error.code === 11000) {
         // Si es un error de código duplicado en MongoDB
         throw new CustomError(`ERROR: Código repetido`, 400, 'addProduct');
       } else {
         // Para otros errores no controlados
-        throw new CustomError(`Verificar ERROR de mongoose código: ${error.code}`, 400, 'addProduct');
+        throw new CustomError(
+          `Verificar ERROR de mongoose código: ${error.code}`,
+          400,
+          'addProduct',
+        );
       }
     }
   };
@@ -152,3 +171,4 @@ class ProductDaoMongo {
 }
 
 exports.ProductMongo = ProductDaoMongo;
+

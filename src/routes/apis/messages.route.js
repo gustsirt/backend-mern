@@ -13,4 +13,4 @@ router.delete('/', async (req, res) => {
   });
 })
 
-exports.messagesRouter = router;
+module.exports = router;

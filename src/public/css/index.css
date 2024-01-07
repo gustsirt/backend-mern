@@ -76,6 +76,7 @@ body .alertContainer .pageAlert {
   margin: 2rem;
   font-size: 2.5rem;
   color: red;
+  text-align: center;
 }
 body .swiper-container, body .cartContainer, body .productsContainer .product {
   margin: 2rem 0;

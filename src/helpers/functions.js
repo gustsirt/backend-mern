@@ -1,6 +1,6 @@
-const {CustomError} = require('./handleErrrors.js')
+const { CustomError } = require('./errors.js');
 
-exports.validateFields = (fields, requiredFields) => {
+const validateFields = (fields, requiredFields) => {
   const missingFields = [];
   const correctObject = {};
 
@@ -12,8 +12,15 @@ exports.validateFields = (fields, requiredFields) => {
     }
   }
   if (missingFields.length > 0) {
-    throw new CustomError(`ERROR: Debe completar los siguientes campos: ${missingFields.join(', ')}`, 400, 'validateFields');
+    throw new CustomError(
+      `ERROR: Debe completar los siguientes campos: ${missingFields.join(
+        ', ',
+      )}`,
+      400,
+      'validateFields',
+    );
   }
   return correctObject;
 };
 
+module.exports = { validateFields };

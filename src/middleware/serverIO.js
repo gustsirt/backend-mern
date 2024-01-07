@@ -1,4 +1,4 @@
-const { CustomError } = require('../helpers/handleErrrors.js');
+const { CustomError } = require('../helpers/errors');
 
 module.exports = function (server) {
   const { Server } = require('socket.io');
@@ -21,7 +21,7 @@ module.exports = function (server) {
 
         let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
         resp = await resp.json()
-        const listProduct = resp.data;
+        const listProduct = resp.data.data;
         
         io.emit('productos', listProduct)
 
@@ -39,7 +39,7 @@ module.exports = function (server) {
       
       let resp = await fetch(`http://localhost:8080/api/products?limit=100`);
       resp = await resp.json()
-      const listProduct = resp.data;
+      const listProduct = resp.data.data;
       
       io.emit('productos', listProduct)
     })
